@@ -41,3 +41,5 @@ Will produce the following lines at the top of the `Equatable.generated.swift` f
 import Foo
 import Bar
 ```
+
+To each property you can add a `// sourcery: testable` annotation to add a `@testable` attribute to the `import`.
