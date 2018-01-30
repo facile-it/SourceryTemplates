@@ -1,6 +1,6 @@
 # Sourcery Templates
 
-A collection of templates for [Sourcery](https://github.com/krzysztofzablocki/Sourcery), writter in [Stencil](https://github.com/kylef/Stencil).
+A collection of templates for [Sourcery](https://github.com/krzysztofzablocki/Sourcery), written in [Stencil](https://github.com/kylef/Stencil).
 
 The templates include:
 
