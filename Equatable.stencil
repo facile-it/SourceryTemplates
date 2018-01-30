@@ -1,0 +1,45 @@
+{%  for type in types.all where type.name == "SourceryImports_Equatable" %}
+{% for variable in type.variables %}
+{% variable.annotations.testable %}@testable {% else %}{% endif %}import {{ variable.name }}
+{% endfor %}
+
+{% endfor %}
+
+{% for type in types.all|annotated:"equatable"|!enum|!protocol %}
+
+extension {{ type.name }}: Equatable {
+    static func == (lhs: {{ type.name }}, rhs: {{ type.name }}) -> Bool {
+        {% for var in type.variables|!static|!computed %}
+			{% if var.actualTypeName.name == "Error" %}
+			guard "\(lhs.{{ var.name }})" == "\(rhs.{{ var.name }})" else { return false }
+			{% else %}
+            guard lhs.{{ var.name }} == rhs.{{ var.name }} else { return false }
+			{% endif %}
+        {% endfor %}
+        return true
+    }
+}
+{% endfor %}
+
+// MARK: - Equatable for enums
+{% for type in types.enums|annotated:"equatable" %}
+
+extension {{ type.name }}: Equatable {
+    static func == (lhs: {{ type.name }}, rhs: {{ type.name }}) -> Bool {
+        switch (lhs,rhs) {
+        {% for case in type.cases %}
+            {% if case.hasAssociatedValue %}case (.{{ case.name }}(let lhs), .{{ case.name }}(let rhs)):{% else %}case (.{{ case.name }}, .{{ case.name }}):{% endif %}
+                {% ifnot case.hasAssociatedValue %}return true{% else %}
+                {% if case.associatedValues.count == 1 %}
+                return lhs == rhs
+                {% else %}
+                {% for associated in case.associatedValues %}if lhs.{{ associated.externalName }} != rhs.{{ associated.externalName }} { return false }
+                {% endfor %}return true
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+        {% if type.cases.count > 1 %}default: return false{% endif %}
+        }
+    }
+}
+{% endfor %}

@@ -1,0 +1,43 @@
+{%  for type in types.all where type.name == "SourceryImports_Match" %}
+{% for variable in type.variables %}
+{% variable.annotations.testable %}@testable {% else %}{% endif %}import {{ variable.name }}
+{% endfor %}
+
+{% endfor %}
+
+{% for type in types.enums|annotated:"match" where type.cases.count > 0 %}
+
+extension {{ type.name }} {
+	func match<ReturnedType>(
+		{% for case in type.cases %}
+		{{ case.name }}: {% if case.associatedValues.count > 0 %}({% for associated in case.associatedValues %}{{ associated.actualTypeName }}{% if forloop.last %}{% else %}, {% endif %}{% endfor %}){% else %}(){% endif %} -> ReturnedType{% if forloop.last %}{% else %}, {% endif %}
+		{% endfor %}) -> ReturnedType {
+		switch self {
+			{% for case in type.cases %}
+			case .{{ case.name }}{% if case.associatedValues.count > 0 %}({% for associated in case.associatedValues %}let x{{ forloop.counter }}{% if forloop.last %}{% else %}, {% endif %}{% endfor %}){% else %}{% endif %}:
+				return {{ case.name }}{% if case.associatedValues.count > 0 %}({% for associated in case.associatedValues %}x{{ forloop.counter }}{% if forloop.last %}{% else %}, {% endif %}{% endfor %}){% else %}(){% endif %}
+			{% endfor %}
+		}
+	}
+
+	{% for case in type.cases %}
+	func match_{{ case.name }}<ReturnedType>(or fallback: @autoclosure () -> ReturnedType, _ matchFunction: {% if case.associatedValues.count > 0 %}({% for associated in case.associatedValues %}{{ associated.actualTypeName }}{% if forloop.last %}{% else %}, {% endif %}{% endfor %}){% else %}(){% endif %} -> ReturnedType) -> ReturnedType {
+		if case .{{ case.name }}{% if case.associatedValues.count > 0 %}({% for associated in case.associatedValues %}let x{{ forloop.counter }}{% if forloop.last %}{% else %}, {% endif %}{% endfor %}){% else %}{% endif %} = self {
+			return matchFunction{% if case.associatedValues.count > 0 %}({% for associated in case.associatedValues %}x{{ forloop.counter }}{% if forloop.last %}{% else %}, {% endif %}{% endfor %}){% else %}(){% endif %}
+		} else {
+			return fallback()
+		}
+	}
+
+	var isCase_{{ case.name }}: Bool {
+		if case .{{ case.name }} = self {
+			return true
+		} else {
+			return false
+		}
+	}
+
+	{% endfor %}
+}
+
+{% endfor %}

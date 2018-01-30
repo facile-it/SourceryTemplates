@@ -1,0 +1,41 @@
+{%  for type in types.all where type.name == "SourceryImports_Prism" %}
+{% for variable in type.variables %}
+{% variable.annotations.testable %}@testable {% else %}{% endif %}import {{ variable.name }}
+{% endfor %}
+
+{% endfor %}
+
+{% for type in types.enums|annotated:"prism" %}
+
+extension {{ type.name }} {
+    enum prism {
+        {% for case in type.cases %}
+		{% if type.isGeneric %}
+		{% if case.hasAssociatedValue %}
+		static var {{ case.name }}: Prism<{{ type.name }},{% if case.associatedValues.count > 1 %}({% for associated in case.associatedValues %}{{ associated.actualTypeName }}{% if forloop.last %}{% else %}, {% endif %}{% endfor %}){% else %}{{ case.associatedValues.first.actualTypeName}}{% endif %}> {
+			return .init(
+				tryGet: { if case .{{ case.name }}(let value) = $0 { return value } else { return nil } },
+				inject: { ({% for associated in case.associatedValues %}x{{ forloop.counter}}{% if not forloop.last%}, {% endif %}{% endfor %}) in .{{ case.name }}({% for associated in case.associatedValues %}{% if associated.localName != nil %}{{ associated.localName }}:{% endif %}x{{ forloop.counter }}{% if not forloop.last%}, {% endif %}{% endfor %}) })
+		}
+		{% else %}
+		static var {{ case.name }}: Prism<{{ type.name }}, ()> {
+			return .init(
+				tryGet: { if case .{{ case.name }} = $0 { return () } else { return nil } },
+				inject: { .{{ case.name }} })
+		}
+		{% endif %}
+		{% else %}
+        {% if case.hasAssociatedValue %}
+        static let {{ case.name }} = Prism<{{ type.name }},{% if case.associatedValues.count > 1 %}({% for associated in case.associatedValues %}{{ associated.actualTypeName }}{% if forloop.last %}{% else %}, {% endif %}{% endfor %}){% else %}{{ case.associatedValues.first.actualTypeName}}{% endif %}>(
+            tryGet: { if case .{{ case.name }}(let value) = $0 { return value } else { return nil } },
+            inject: { ({% for associated in case.associatedValues %}x{{ forloop.counter}}{% if not forloop.last%}, {% endif %}{% endfor %}) in .{{ case.name }}({% for associated in case.associatedValues %}{% if associated.localName != nil %}{{ associated.localName }}:{% endif %}x{{ forloop.counter }}{% if not forloop.last%}, {% endif %}{% endfor %}) })
+        {% else %}
+        static let {{ case.name }} = Prism<{{ type.name }}, ()>(
+            tryGet: { if case .{{ case.name }} = $0 { return () } else { return nil } },
+            inject: { .{{ case.name }} })
+        {% endif %}
+		{% endif %}
+        {% endfor %}
+    }
+}
+{% endfor %}
