@@ -20,7 +20,7 @@ The templates include:
 
 ------
 
-Please refer to the Sourcery [documentation](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/index.html) for how to you these templates in your projects.
+Please refer to the Sourcery [documentation](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/index.html) for how to use these templates in your projects.
 
 ------
 
