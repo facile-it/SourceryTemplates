@@ -10,32 +10,41 @@
 extension {{ type.name }} {
     enum lens {
         {% for var in type.variables|!static|!computed %}
+
 		{% if type.isGeneric %}
 		static var {{ var.name }}: Lens<{{ type.name }},{{ var.typeName }}> {
 			return Lens<{{ type.name }},{{ var.typeName }}>(
 				get: { $0.{{ var.name }} },
-				set: { part in { whole in
-					{% if var.isMutable %}
-					var m = whole; m.{{ var.name }} = part; return m
-					{% else %}
-					return {{ type.name }}.init(
-						{% for var1 in type.variables|!static|!computed %}
-						{{ var1.name }}: {% if var1.name == var.name %}part{% else %}whole.{{ var1.name }}{% endif %}{% if not forloop.last %},{% endif %}{% endfor %})
-					{% endif %}
-				} })
+				set: { part in
+				    { whole in
+						{% if var.isMutable %}
+						var m = whole
+                        m.{{ var.name }} = part
+                        return m
+					    {% else %}
+					    {{ type.name }}.init(
+							{% for var1 in type.variables|!static|!computed %}
+						    {{ var1.name }}: {% if var1.name == var.name %}part{% else %}whole.{{ var1.name }}{% endif %}{% if not forloop.last %},{% endif %}{% endfor %})
+						{% endif %}
+					}
+	        })
 		}
 		{% else %}
         static let {{ var.name }} = Lens<{{ type.name }},{{ var.typeName }}>(
             get: { $0.{{ var.name }} },
-			set: { part in { whole in
-				{% if var.isMutable %}
-				var m = whole; m.{{ var.name }} = part; return m
-				{% else %}
-				return {{ type.name }}.init(
-					{% for var1 in type.variables|!static|!computed %}
-					{{ var1.name }}: {% if var1.name == var.name %}part{% else %}whole.{{ var1.name }}{% endif %}{% if not forloop.last %},{% endif %}{% endfor %})
-				{% endif %}
-				} })
+			set: { part in
+				{ whole in
+					{% if var.isMutable %}
+					var m = whole
+					m.{{ var.name }} = part
+					return m
+					{% else %}
+					{{ type.name }}.init(
+						{% for var1 in type.variables|!static|!computed %}
+						{{ var1.name }}: {% if var1.name == var.name %}part{% else %}whole.{{ var1.name }}{% endif %}{% if not forloop.last %},{% endif %}{% endfor %})
+					{% endif %}
+				}
+		})
 		{% endif %}
         {% endfor %}
     }
