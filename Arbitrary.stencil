@@ -1,6 +1,6 @@
 {%  for type in types.all where type.name == "SourceryImports_Arbitrary" %}
 {% for variable in type.variables %}
-{% variable.annotations.testable %}@testable {% else %}{% endif %}import {{ variable.name }}
+{% if variable|annotated:"testable" %}@testable {% else %}{% endif %}import {{ variable.name }}
 {% endfor %}
 
 {% endfor %}
