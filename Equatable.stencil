@@ -38,7 +38,9 @@ extension {{ type.name }}: Equatable {
                 {% endif %}
             {% endif %}
         {% endfor %}
-        {% if type.cases.count > 1 %}default: return false{% endif %}
+        {% if type.cases.count > 1 %}
+			default: return false
+		{% endif %}
         }
     }
 }
