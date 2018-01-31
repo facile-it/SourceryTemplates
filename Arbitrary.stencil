@@ -16,7 +16,7 @@
                     {{ var.name }}: $0.generate(using: ArrayOf<{{ var.typeName.array.elementTypeName.name }}>.arbitrary.map { $0.getArray }){% if not forloop.last %}, {% endif %}
                   {% elif var.isDictionary %}
                     {{ var.name }}: $0.generate(using: DictionaryOf<{{ var.typeName.dictionary.keyTypeName.name }}, {{ var.typeName.dictionary.valueTypeName.name }}>.arbitrary.map { $0.getDictionary }){% if not forloop.last %}, {% endif %}
-                  {% elif var.actualTypeName.name|contains:"<"|contains:">" %}
+                  {% elif var.actualTypeName.name|contains:">" %}
                     {{ var.name }}: $0.generate(using: Arbitrary{{ var.actualTypeName.name }}.arbitrary.map { $0.get }){% if not forloop.last %}, {% endif %}
 				  {% elif var.actualTypeName.name == "Error" %}
 					{{ var.name }}: $0.generate(using: String.arbitrary){% if not forloop.last %}, {% endif %}
