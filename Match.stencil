@@ -29,9 +29,9 @@ extension {{ type.name }} {
 		}
 	}
 
-	var isCase_{{ case.name }}: Bool {
-		if case .{{ case.name }} = self {
-			return true
+	func isCase_{{ case.name }}(_ isCaseFunction: {% if case.associatedValues.count > 0 %}({% for associated in case.associatedValues %}{{ associated.actualTypeName }}{% if forloop.last %}{% else %}, {% endif %}{% endfor %}){% else %}(){% endif %} -> Bool = { {% if case.associatedValues.count > 0 %}{% for associated in case.associatedValues %}_{% if forloop.last %}{% else %}, {% endif %}{% endfor %} in{% else %}{% endif %} true }) -> Bool {
+		if case .{{ case.name }}{% if case.associatedValues.count > 0 %}({% for associated in case.associatedValues %}let x{{ forloop.counter }}{% if forloop.last %}{% else %}, {% endif %}{% endfor %}){% else %}{% endif %} = self {
+			return isCaseFunction{% if case.associatedValues.count > 0 %}({% for associated in case.associatedValues %}x{{ forloop.counter }}{% if forloop.last %}{% else %}, {% endif %}{% endfor %}){% else %}(){% endif %}
 		} else {
 			return false
 		}
