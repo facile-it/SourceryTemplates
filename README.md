@@ -43,3 +43,9 @@ import Bar
 ```
 
 To each property you can add a `// sourcery: testable` annotation to add a `@testable` attribute to the `import`.
+
+------
+
+## Integration
+
+Each project is different, so there's no generic bash script or YAML file included here: just download the templates and use them as you like, or simply add a submodule in a `Templates` folder.
