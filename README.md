@@ -30,8 +30,8 @@ For example, the following struct:
 
 ```swift
 private struct SourceryImports_Equatable {
-  let Foo = ()
-  let Bar = ()
+  let Foo = 0
+  let Bar = 0
 }
 ```
 
