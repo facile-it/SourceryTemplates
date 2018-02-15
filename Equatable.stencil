@@ -16,7 +16,7 @@ extension {{ type.name }}: Equatable {
 		{% else %}
 		guard lhs.{{ var.name }} == rhs.{{ var.name }} else { return false }
 		{% endif %}
-	{% endfor %}
+		{% endfor %}
         return true
     }
 }
@@ -32,10 +32,20 @@ extension {{ type.name }}: Equatable {
             {% if case.hasAssociatedValue %}case (.{{ case.name }}(let lhs), .{{ case.name }}(let rhs)):{% else %}case (.{{ case.name }}, .{{ case.name }}):{% endif %}
                 {% ifnot case.hasAssociatedValue %}return true{% else %}
                 {% if case.associatedValues.count == 1 %}
-                return lhs == rhs
+				{% if case.associatedValues.first.actualTypeName.name == "Error" %}
+                return "\(lhs)" == "\(rhs)"
+				{% else %}
+				return lhs == rhs
+				{% endif %}
                 {% else %}
-                {% for associated in case.associatedValues %}if lhs.{{ associated.externalName }} != rhs.{{ associated.externalName }} { return false }
-                {% endfor %}return true
+                {% for associated in case.associatedValues %}
+				{% if associated.actualTypeName.name == "Error" %}
+				guard "\(lhs.{{ associated.externalName }})" == "\(rhs.{{ associated.externalName }})" else { return false }
+				{% else %}
+				guard lhs.{{ associated.externalName }} == rhs.{{ associated.externalName }} else { return false }
+				{% endif %}
+                {% endfor %}
+				return true
                 {% endif %}
             {% endif %}
         {% endfor %}
