@@ -8,14 +8,14 @@
 {% for type in types.all|annotated:"equatable"|!enum|!protocol %}
 
 extension {{ type.name }}: Equatable {
-    static func == (lhs: {{ type.name }}, rhs: {{ type.name }}) -> Bool {
-        {% for var in type.variables|!static|!computed %}
-			{% if var.actualTypeName.name == "Error" %}
-			guard "\(lhs.{{ var.name }})" == "\(rhs.{{ var.name }})" else { return false }
-			{% else %}
-            guard lhs.{{ var.name }} == rhs.{{ var.name }} else { return false }
-			{% endif %}
-        {% endfor %}
+    public static func == (lhs: {{ type.name }}, rhs: {{ type.name }}) -> Bool {
+	{% for var in type.variables|!static|!computed %}
+		{% if var.actualTypeName.name == "Error" %}
+		guard "\(lhs.{{ var.name }})" == "\(rhs.{{ var.name }})" else { return false }
+		{% else %}
+		guard lhs.{{ var.name }} == rhs.{{ var.name }} else { return false }
+		{% endif %}
+	{% endfor %}
         return true
     }
 }
@@ -25,7 +25,7 @@ extension {{ type.name }}: Equatable {
 {% for type in types.enums|annotated:"equatable" %}
 
 extension {{ type.name }}: Equatable {
-    static func == (lhs: {{ type.name }}, rhs: {{ type.name }}) -> Bool {
+    public static func == (lhs: {{ type.name }}, rhs: {{ type.name }}) -> Bool {
         switch (lhs,rhs) {
         {% for case in type.cases %}
             {% if case.hasAssociatedValue %}case (.{{ case.name }}(let lhs), .{{ case.name }}(let rhs)):{% else %}case (.{{ case.name }}, .{{ case.name }}):{% endif %}
