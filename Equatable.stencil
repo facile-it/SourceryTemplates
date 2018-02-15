@@ -5,6 +5,7 @@
 
 {% endfor %}
 
+// MARK: - Equatable for structs and classes
 {% for type in types.all|annotated:"equatable"|!enum|!protocol %}
 
 extension {{ type.name }}: Equatable {
