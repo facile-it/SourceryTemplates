@@ -7,7 +7,7 @@
 
 {% for type in types.structs|annotated:"init"|!enum|!protocol %}
 
-extension {{ type.name }} {
+public extension {{ type.name }} {
     init({% for var in type.variables|!static|!computed %}{{ var.name }}: {{ var.actualTypeName }}{% if not forloop.last %}, {% endif %}{% endfor %}) {
         {% for var in type.variables|!static|!computed %}
         self.{{ var.name }} = {{ var.name }}

@@ -7,7 +7,7 @@
 
 {% for type in types.structs|annotated:"lens" %}
 
-extension {{ type.name }} {
+public extension {{ type.name }} {
     enum lens {
         {% for var in type.variables|!static|!computed %}
 

@@ -7,7 +7,7 @@
 
 {% for type in types.enums|annotated:"prism" %}
 
-extension {{ type.name }} {
+public extension {{ type.name }} {
     enum prism {
         {% for case in type.cases %}
 
