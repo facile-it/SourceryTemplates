@@ -5,18 +5,19 @@ A collection of templates for [Sourcery](https://github.com/krzysztofzablocki/So
 The templates include:
 
 - [Arbitrary.stencil](Arbitrary.stencil): autogeneration of `Arbitrary` conformance for [SwiftCheck](https://github.com/typelift/SwiftCheck);
-  - add with `// sourcery: arbitrary`;
-  - specify type constraint for generic parameters with a `genericParameterProtocols` annotation (ex. `// sourcery: genericParameterProtocols = "Equatable & Sequence"`);
+	- add with `// sourcery: arbitrary`;
+	- specify type constraint for generic parameters with a `genericParameterProtocols` annotation (ex. `// sourcery: genericParameterProtocols = "Equatable & Sequence"`);
 - [Equatable.stencil](Equatable.stencil): autogeneration of `Equatable` conformance for structs, enums and classes, based on stored properties and cases;
-  - add with `// sourcery: equatable`;
+	- add with `// sourcery: equatable`;
 - [Init.stencil](Init.stencil): autogeneration of a memberwise initializer for structs and classes, based on stored properties;
-  - add with `// sourcery: init`;
+	- this is a inline generator, meaning that it will add the code directly in the source file, and won't generate an external `Init.generated.swift` file;
+	- set the start for the inline generation with `// sourcery:inline:__TYPE_NAME__.Init` and set the end with `// sourcery:end`;
 - [Match.stencil](Match.stencil): autogeneration of `match` functions for enums (basically, `switch`, but an actual expression that returns something), useful for closures in which a single expression is required for type inference;
-  - add with `// sourcery: match`;
+	- add with `// sourcery: match`;
 - [Lens.stencil](Lens.stencil): autogeneration of "lenses" for structs, based on the implementation proposed in [FunctionalKit](https://github.com/facile-it/FunctionalKit) (please refer to [this article](https://broomburgo.github.io/fun-ios/post/lenses-and-prisms-in-swift-a-pragmatic-approach/) for more info);
-  - add with `// sourcery: lens`;
+	- add with `// sourcery: lens`;
 - [Prism.stencil](Prism.stencil): autogeneration of "prisms" for enums, based on the implementation proposed in [FunctionalKit](https://github.com/facile-it/FunctionalKit) (please refer to [this article](https://broomburgo.github.io/fun-ios/post/lenses-and-prisms-in-swift-a-pragmatic-approach/) for more info)
-  - add with `// sourcery: prism`;
+	- add with `// sourcery: prism`;
 
 ------
 

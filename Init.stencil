@@ -1,17 +1,9 @@
-{%  for type in types.all where type.name == "SourceryImports_Init" %}
-{% for variable in type.variables %}
-{% if variable|annotated:"testable" %}@testable {% else %}{% endif %}import {{ variable.name }}
-{% endfor %}
-
-{% endfor %}
-
-{% for type in types.structs|annotated:"init"|!enum|!protocol %}
-
-public extension {{ type.name }} {
-    init({% for var in type.variables|!static|!computed %}{{ var.name }}: {{ var.actualTypeName }}{% if not forloop.last %}, {% endif %}{% endfor %}) {
+{% for type in types.structs|!enum|!protocol %}
+// sourcery:inline:{{ type.name }}.Init
+    public init({% for var in type.variables|!static|!computed %}{{ var.name }}: {{ var.actualTypeName }}{% if not forloop.last %}, {% endif %}{% endfor %}) {
         {% for var in type.variables|!static|!computed %}
         self.{{ var.name }} = {{ var.name }}
         {% endfor %}
     }
-}
+// sourcery:end
 {% endfor %}
