@@ -7,7 +7,7 @@
 
 {% for type in types.enums|annotated:"match" where type.cases.count > 0 %}
 
-public extension {{ type.name }} {
+{{ type.accessLevel }} extension {{ type.name }} {
 	func match<ReturnedType>(
 		{% for case in type.cases %}
 		{{ case.name }}: {% if case.associatedValues.count > 0 %}({% for associated in case.associatedValues %}{{ associated.actualTypeName }}{% if forloop.last %}{% else %}, {% endif %}{% endfor %}){% else %}(){% endif %} -> ReturnedType{% if forloop.last %}{% else %}, {% endif %}
