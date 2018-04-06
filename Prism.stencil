@@ -39,4 +39,16 @@
         {% endfor %}
     }
 }
+
+{% if type.annotations.prism == "chain" %}
+{{ type.accessLevel }} extension PrismType where SType == TType, AType == BType, BType == {{ type.name }} {
+	{% for case in type.cases where case.associatedValues.count == 1 %}
+	var {{ case.name }}: Prism<SType,{{ case.associatedValues.first.typeName }}> {
+		return self >>> {{ type.name }}.prism.{{ case.name }}
+	}
+
+	{% endfor %}
+}
+{% endif %}
+
 {% endfor %}
