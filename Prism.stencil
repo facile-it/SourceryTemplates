@@ -10,7 +10,6 @@
 {{ type.accessLevel }} extension {{ type.name }} {
     enum prism {
         {% for case in type.cases %}
-
 		{% if type.isGeneric %}
 		{% if case.hasAssociatedValue %}
 		static var {{ case.name }}: Prism<{{ type.name }},{% if case.associatedValues.count > 1 %}({% for associated in case.associatedValues %}{{ associated.actualTypeName }}{% if forloop.last %}{% else %}, {% endif %}{% endfor %}){% else %}{{ case.associatedValues.first.actualTypeName}}{% endif %}> {
@@ -36,16 +35,23 @@
             inject: { .{{ case.name }} })
         {% endif %}
 		{% endif %}
+
         {% endfor %}
     }
 }
 
 {% if type.annotations.prism == "chain" %}
 {{ type.accessLevel }} extension PrismType where SType == TType, AType == BType, BType == {{ type.name }} {
-	{% for case in type.cases where case.associatedValues.count == 1 %}
-	var {{ case.name }}: Prism<SType,{{ case.associatedValues.first.typeName }}> {
+	{% for case in type.cases %}
+	{% if case.hasAssociatedValue %}
+	var {{ case.name }}: Prism<SType,{% if case.associatedValues.count > 1 %}({% for associated in case.associatedValues %}{{ associated.actualTypeName }}{% if forloop.last %}{% else %}, {% endif %}{% endfor %}){% else %}{{ case.associatedValues.first.actualTypeName}}{% endif %}> {
 		return self >>> {{ type.name }}.prism.{{ case.name }}
 	}
+	{% else %}
+	var {{ case.name }}: Prism<SType,()> {
+		return self >>> {{ type.name }}.prism.{{ case.name }}
+	}
+	{% endif %}
 
 	{% endfor %}
 }
