@@ -16,8 +16,12 @@ The templates include:
 	- add with `// sourcery: match`;
 - [Lens.stencil](Lens.stencil): autogeneration of "lenses" for structs, based on the implementation proposed in [FunctionalKit](https://github.com/facile-it/FunctionalKit) (please refer to [this article](https://broomburgo.github.io/fun-ios/post/lenses-and-prisms-in-swift-a-pragmatic-approach/) for more info);
 	- add with `// sourcery: lens`;
+	- add `chain` option for automatic chaining of lenses: with `// sourcery: lens = "chain"` you'll be able to compose lenses with `TypeName.lens.prop1.prop2.prop3`;
 - [Prism.stencil](Prism.stencil): autogeneration of "prisms" for enums, based on the implementation proposed in [FunctionalKit](https://github.com/facile-it/FunctionalKit) (please refer to [this article](https://broomburgo.github.io/fun-ios/post/lenses-and-prisms-in-swift-a-pragmatic-approach/) for more info)
 	- add with `// sourcery: prism`;
+	- add `chain` option for automatic chaining of prisms: with `// sourcery: prism = "chain"` you'll be able to compose prisms with `TypeName.prism.case1.case2.case3`;
+
+Please note that lens and prism chaining **only works** with *non-nested* types, e.g. it won't work for types like `TypeName.NestedType`, due to a limitation with Sourcery.
 
 ------
 
