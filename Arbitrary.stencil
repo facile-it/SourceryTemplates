@@ -11,11 +11,11 @@
                   {% if var.actualTypeName.name|hasPrefix:"UI" %}
                     {{ var.name }}: {{ var.actualTypeName.name }}(){% if not forloop.last %},{% endif %} 
                   {% elif var.isOptional %}
-                    {{ var.name }}: $0.generate(using: OptionalOf<{{ var.actualTypeName.unwrappedTypeName }}>.arbitrary.map { $0.getOptional }){% if not forloop.last %}, {% endif %}
+                    {{ var.name }}: $0.generate(using: Optional<{{ var.actualTypeName.unwrappedTypeName }}>.arbitrary.map { $0 }){% if not forloop.last %}, {% endif %}
                   {% elif var.isArray %}
-                    {{ var.name }}: $0.generate(using: ArrayOf<{{ var.typeName.array.elementTypeName.name }}>.arbitrary.map { $0.getArray }){% if not forloop.last %}, {% endif %}
+                    {{ var.name }}: $0.generate(using: Array<{{ var.typeName.array.elementTypeName.name }}>.arbitrary.map { $0 }){% if not forloop.last %}, {% endif %}
                   {% elif var.isDictionary %}
-                    {{ var.name }}: $0.generate(using: DictionaryOf<{{ var.typeName.dictionary.keyTypeName.name }}, {{ var.typeName.dictionary.valueTypeName.name }}>.arbitrary.map { $0.getDictionary }){% if not forloop.last %}, {% endif %}
+                    {{ var.name }}: $0.generate(using: Dictionary<{{ var.typeName.dictionary.keyTypeName.name }}, {{ var.typeName.dictionary.valueTypeName.name }}>.arbitrary.map { $0 }){% if not forloop.last %}, {% endif %}
                   {% elif var.actualTypeName.name|contains:">" %}
                     {{ var.name }}: $0.generate(using: Arbitrary{{ var.actualTypeName.name }}.arbitrary.map { $0.get }){% if not forloop.last %}, {% endif %}
 				  {% elif var.actualTypeName.name == "Error" %}
@@ -25,9 +25,9 @@
                   {% endif %}
                 {% endfor %}
 {% endmacro %}
-{% macro caseOptional type case associatedValue %}OptionalOf<{{ associatedValue.actualTypeName.unwrappedTypeName }}>.arbitrary.map { $0.getOptional }.map({{ type.name}}.{{ case.name }}){% if not forloop.last %},{% endif %}{% endmacro %}
-{% macro caseArray type case associatedValue %}ArrayOf<{{ associatedValue.typeName.array.elementTypeName.name }}>.arbitrary.map { $0.getArray }.map({{ type.name}}.{{ case.name }}){% if not forloop.last %},{% endif %}{% endmacro %}
-{% macro caseDictionary type case associatedValue %}DictionaryOf<{{ associatedValue.typeName.dictionary.keyTypeName.name }}, {{ associatedValue.typeName.dictionary.valueTypeName.name }}>.arbitrary.map { $0.getDictionary }.map({{ type.name}}.{{ case.name }}){% if not forloop.last %},{% endif %}{% endmacro %}
+{% macro caseOptional type case associatedValue %}Optional<{{ associatedValue.actualTypeName.unwrappedTypeName }}>.arbitrary.map { $0 }.map({{ type.name}}.{{ case.name }}){% if not forloop.last %},{% endif %}{% endmacro %}
+{% macro caseArray type case associatedValue %}Array<{{ associatedValue.typeName.array.elementTypeName.name }}>.arbitrary.map { $0 }.map({{ type.name}}.{{ case.name }}){% if not forloop.last %},{% endif %}{% endmacro %}
+{% macro caseDictionary type case associatedValue %}Dictionary<{{ associatedValue.typeName.dictionary.keyTypeName.name }}, {{ associatedValue.typeName.dictionary.valueTypeName.name }}>.arbitrary.map { $0 }.map({{ type.name}}.{{ case.name }}){% if not forloop.last %},{% endif %}{% endmacro %}
 {% macro iterateCases cases pureTypeName optionalGenericParameter %}
         {% for case in cases %}
             {% if not case.hasAssociatedValue %}
