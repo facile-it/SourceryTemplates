@@ -1,3 +1,5 @@
+{% macro getTypeName type %}{% if type.actualTypeName %}{{ type.actualTypeName.name }}{% else %}{{ type.typeName.name }}{% endif %}{% endmacro %}
+
 {%  for type in types.all where type.name == "SourceryImports_Match" %}
 {% for variable in type.variables %}
 {% if variable|annotated:"testable" %}@testable {% else %}{% endif %}import {{ variable.name }}
@@ -10,7 +12,7 @@
 {{ type.accessLevel }} extension {{ type.name }} {
 	func match<ReturnedType>(
 		{% for case in type.cases %}
-		{{ case.name }}: {% if case.associatedValues.count > 0 %}({% for associated in case.associatedValues %}{{ associated.actualTypeName }}{% if forloop.last %}{% else %}, {% endif %}{% endfor %}){% else %}(){% endif %} -> ReturnedType{% if forloop.last %}{% else %}, {% endif %}
+		{{ case.name }}: {% if case.associatedValues.count > 0 %}({% for associated in case.associatedValues %}{% call getTypeName associated %}{% if forloop.last %}{% else %}, {% endif %}{% endfor %}){% else %}(){% endif %} -> ReturnedType{% if forloop.last %}{% else %}, {% endif %}
 		{% endfor %}) -> ReturnedType {
 		switch self {
 			{% for case in type.cases %}
@@ -21,7 +23,7 @@
 	}
 
 	{% for case in type.cases %}
-	func match_{{ case.name }}<ReturnedType>(or fallback: @autoclosure () -> ReturnedType, _ matchFunction: {% if case.associatedValues.count > 0 %}({% for associated in case.associatedValues %}{{ associated.actualTypeName }}{% if forloop.last %}{% else %}, {% endif %}{% endfor %}){% else %}(){% endif %} -> ReturnedType) -> ReturnedType {
+	func match_{{ case.name }}<ReturnedType>(or fallback: @autoclosure () -> ReturnedType, _ matchFunction: {% if case.associatedValues.count > 0 %}({% for associated in case.associatedValues %}{% call getTypeName associated %}{% if forloop.last %}{% else %}, {% endif %}{% endfor %}){% else %}(){% endif %} -> ReturnedType) -> ReturnedType {
 		if case .{{ case.name }}{% if case.associatedValues.count > 0 %}({% for associated in case.associatedValues %}let x{{ forloop.counter }}{% if forloop.last %}{% else %}, {% endif %}{% endfor %}){% else %}{% endif %} = self {
 			return matchFunction{% if case.associatedValues.count > 0 %}({% for associated in case.associatedValues %}x{{ forloop.counter }}{% if forloop.last %}{% else %}, {% endif %}{% endfor %}){% else %}(){% endif %}
 		} else {
@@ -29,7 +31,7 @@
 		}
 	}
 
-	func isCase_{{ case.name }}(_ isCaseFunction: {% if case.associatedValues.count > 0 %}({% for associated in case.associatedValues %}{{ associated.actualTypeName }}{% if forloop.last %}{% else %}, {% endif %}{% endfor %}){% else %}(){% endif %} -> Bool = { {% if case.associatedValues.count > 0 %}{% for associated in case.associatedValues %}_{% if forloop.last %}{% else %}, {% endif %}{% endfor %} in{% else %}{% endif %} true }) -> Bool {
+	func isCase_{{ case.name }}(_ isCaseFunction: {% if case.associatedValues.count > 0 %}({% for associated in case.associatedValues %}{% call getTypeName associated %}{% if forloop.last %}{% else %}, {% endif %}{% endfor %}){% else %}(){% endif %} -> Bool = { {% if case.associatedValues.count > 0 %}{% for associated in case.associatedValues %}_{% if forloop.last %}{% else %}, {% endif %}{% endfor %} in{% else %}{% endif %} true }) -> Bool {
 		if case .{{ case.name }}{% if case.associatedValues.count > 0 %}({% for associated in case.associatedValues %}let x{{ forloop.counter }}{% if forloop.last %}{% else %}, {% endif %}{% endfor %}){% else %}{% endif %} = self {
 			return isCaseFunction{% if case.associatedValues.count > 0 %}({% for associated in case.associatedValues %}x{{ forloop.counter }}{% if forloop.last %}{% else %}, {% endif %}{% endfor %}){% else %}(){% endif %}
 		} else {
