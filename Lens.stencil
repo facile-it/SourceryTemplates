@@ -51,10 +51,10 @@
 }
 
 {% if type.annotations.lens == "chain" %}
-{{ type.accessLevel }} extension LensType where SType == TType, AType == BType, BType == {{ type.name }} {
+{{ type.accessLevel }} extension Lens where S == T, A == B, B == {{ type.name }} {
 	{% for var in type.variables|!static|!computed %}
-	var {{ var.name }}: Lens<SType,{{ var.typeName }}> {
-		return self >>> {{ type.name }}.lens.{{ var.name }}
+	var {{ var.name }}: Lens<S,{{ var.typeName }}> {
+		return self.then({{ type.name }}.lens.{{ var.name }})
 	}
 
 	{% endfor %}
