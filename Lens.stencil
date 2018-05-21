@@ -7,12 +7,12 @@
 
 {% for type in types.structs|annotated:"lens" %}
 
-{{ type.accessLevel }} extension {{ type.name }} {
-    enum lens {
+extension {{ type.name }} {
+    {{ type.accessLevel }} enum lens {
         {% for var in type.variables|!static|!computed %}
 
 		{% if type.isGeneric %}
-		static var {{ var.name }}: Lens<{{ type.name }},{{ var.typeName }}> {
+		{{ type.accessLevel }} static var {{ var.name }}: Lens<{{ type.name }},{{ var.typeName }}> {
 			return Lens<{{ type.name }},{{ var.typeName }}>(
 				get: { $0.{{ var.name }} },
 				set: { part in
@@ -30,7 +30,7 @@
 	        })
 		}
 		{% else %}
-        static let {{ var.name }} = Lens<{{ type.name }},{{ var.typeName }}>(
+        {{ type.accessLevel }} static let {{ var.name }} = Lens<{{ type.name }},{{ var.typeName }}>(
             get: { $0.{{ var.name }} },
 			set: { part in
 				{ whole in
