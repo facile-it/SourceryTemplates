@@ -22,7 +22,7 @@ extension {{ type.name }} {
                         m.{{ var.name }} = part
                         return m
 					    {% else %}
-					    {{ type.name }}.init(
+					    {{ type.name }}(
 							{% for var1 in type.variables|!static|!computed %}
 						    {{ var1.name }}: {% if var1.name == var.name %}part{% else %}whole.{{ var1.name }}{% endif %}{% if not forloop.last %},{% endif %}{% endfor %})
 						{% endif %}
@@ -39,7 +39,7 @@ extension {{ type.name }} {
 					m.{{ var.name }} = part
 					return m
 					{% else %}
-					{{ type.name }}.init(
+					{{ type.name }}(
 						{% for var1 in type.variables|!static|!computed %}
 						{{ var1.name }}: {% if var1.name == var.name %}part{% else %}whole.{{ var1.name }}{% endif %}{% if not forloop.last %},{% endif %}{% endfor %})
 					{% endif %}
