@@ -29,7 +29,7 @@ extension {{ type.name }}: Equatable {
     {{ type.accessLevel }} static func == (lhs: {{ type.name }}, rhs: {{ type.name }}) -> Bool {
         switch (lhs,rhs) {
         {% for case in type.cases %}
-            {% if case.hasAssociatedValue %}case (.{{ case.name }}(let lhs), .{{ case.name }}(let rhs)):{% else %}case (.{{ case.name }}, .{{ case.name }}):{% endif %}
+            {% if case.hasAssociatedValue %}case (.{{ case.name }}({% if case.associatedValues.count == 1 %}let lhs{% else %}{% for associated in case.associatedValues %}let {{ associated.externalName }}1{% if not forloop.last%}, {% endif %}{% endfor %}{% endif %}), .{{ case.name }}({% if case.associatedValues.count == 1 %}let rhs{% else %}{% for associated in case.associatedValues %}let {{ associated.externalName }}2{% if not forloop.last%}, {% endif %}{% endfor %}{% endif %})):{% else %}case (.{{ case.name }}, .{{ case.name }}):{% endif %}
                 {% ifnot case.hasAssociatedValue %}return true{% else %}
                 {% if case.associatedValues.count == 1 %}
 				{% if case.associatedValues.first.actualTypeName.name == "Error" %}
@@ -40,9 +40,9 @@ extension {{ type.name }}: Equatable {
                 {% else %}
                 {% for associated in case.associatedValues %}
 				{% if associated.actualTypeName.name == "Error" %}
-				guard "\(lhs.{{ associated.externalName }})" == "\(rhs.{{ associated.externalName }})" else { return false }
+				guard "\({{ associated.externalName }}1)" == "\(r{{ associated.externalName }}2)" else { return false }
 				{% else %}
-				guard lhs.{{ associated.externalName }} == rhs.{{ associated.externalName }} else { return false }
+				guard {{ associated.externalName }}1 == {{ associated.externalName }}2 else { return false }
 				{% endif %}
                 {% endfor %}
 				return true
