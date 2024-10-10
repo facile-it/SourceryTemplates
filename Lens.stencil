@@ -1,6 +1,6 @@
 {%  for type in types.all where type.name == "SourceryImports_Lens" %}
 {% for variable in type.variables %}
-{% if variable|annotated:"testable" %}@testable {% else %}{% endif %}import {{ variable.name }}
+{% if variable|annotated:"testable" %}@testable {% else %}{% endif %}{% if variable|annotated:"preconcurrency" %}@preconcurrency {% else %}{% endif %}import {{ variable.name }}
 {% endfor %}
 
 {% endfor %}

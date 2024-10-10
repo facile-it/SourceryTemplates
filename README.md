@@ -47,7 +47,9 @@ import Foo
 import Bar
 ```
 
-To each property you can add a `// sourcery: testable` annotation to add a `@testable` attribute to the `import`.
+To each property you can add a `// sourcery: testable` annotation to add a `@testable` attribute to the `import`. 
+
+Furthermore, you can also add a `// sourcery: preconcurrency` annotation to add a `@preconcurrency` attribute to the `import`.
 
 ------
 
