@@ -83,7 +83,7 @@ struct Arbitrary{{ type.name }}<T>: Arbitrary where T: Arbitrary{% if type.annot
     }
 }
 {% else %}
-extension {{ type.name }}: Arbitrary {
+extension {{ type.name }}: {% if type|annotated:"retroactive" %}@retroactive {% else %}{% endif %}Arbitrary {
     public static var arbitrary: Gen<{{ type.name }}> {
         return Gen<{{ type.name }}>
             .compose {
@@ -113,7 +113,7 @@ struct Arbitrary{{ type.name }}<T>: Arbitrary where T: Arbitrary{% if type.annot
     }
 }
 {% else %}
-extension {{ type.name }}: Arbitrary {
+extension {{ type.name }}: {% if type|annotated:"retroactive" %}@retroactive {% else %}{% endif %}Arbitrary {
     public static var arbitrary: Gen<{{ type.name}}> {
         return Gen<{{ type.name}}>.one(of: [
         {% call iterateCases type.cases type.name "" %}
