@@ -11,7 +11,6 @@ extension {{ type.name }} {
     {{ type.accessLevel }} enum lens {
         {% for var in type.variables|!static|!computed %}
 
-		{% if type.isGeneric %}
 		{{ type.accessLevel }} static var {{ var.name }}: Lens<{{ type.name }},{{ var.typeName }}> {
 			return Lens<{{ type.name }},{{ var.typeName }}>(
 				get: { $0.{{ var.name }} },
@@ -29,23 +28,6 @@ extension {{ type.name }} {
 					}
 	        })
 		}
-		{% else %}
-        {{ type.accessLevel }} static let {{ var.name }} = Lens<{{ type.name }},{{ var.typeName }}>(
-            get: { $0.{{ var.name }} },
-			set: { part in
-				{ whole in
-					{% if var.isMutable %}
-					var m = whole
-					m.{{ var.name }} = part
-					return m
-					{% else %}
-					{{ type.name }}(
-						{% for var1 in type.variables|!static|!computed %}
-						{{ var1.name }}: {% if var1.name == var.name %}part{% else %}whole.{{ var1.name }}{% endif %}{% if not forloop.last %},{% endif %}{% endfor %})
-					{% endif %}
-				}
-		})
-		{% endif %}
         {% endfor %}
     }
 }
